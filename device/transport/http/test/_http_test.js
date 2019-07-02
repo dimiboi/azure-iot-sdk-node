@@ -349,6 +349,12 @@ describe('Http', function () {
         transport.setOptions({});
       });
     });
+
+    it('sets _productInfo if productInfo is provided', function() {
+      var transport = new Http(fakeAuthenticationProvider);
+      transport.setOptions({ productInfo: 'fakeProductInfoString' });
+      assert.exists(transport._productInfo);
+    });
   });
 
   describe('#updateSharedAccessSignature', function() {

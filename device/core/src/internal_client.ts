@@ -359,7 +359,7 @@ export abstract class InternalClient extends EventEmitter {
     }, (err) => {
       /*Codes_SRS_NODE_INTERNAL_CLIENT_16_043: [The `done` callback shall be invoked no parameters when it has successfully finished setting the client and/or transport options.]*/
       /*Codes_SRS_NODE_INTERNAL_CLIENT_16_044: [The `done` callback shall be invoked with a standard javascript `Error` object and no result object if the client could not be configured as requested.]*/
-      safeCallback(done, err);
+      safeCallback(done, err, new results.TransportConfigured());
     });
   }
 

@@ -112,19 +112,21 @@ export interface DeviceClientOptions extends X509 {
    * connecting to some other hub (e.g. an Edge Hub), then you may need to set this to the server cert that the hub uses for TLS.
    */
   ca?: string;
-
   /**
-   * Optional object with options specific to the Mqtt transport
+   * Custom User Agent Option
+   */
+  productInfo?: string;
+  /**
+   * Optional object with options specific to the MQTT transport
    */
   mqtt?: MqttTransportOptions;
-
   /**
-   * Optional object with options specific to the Mqtt transport
+   * Optional object with options specific to the HTTP transport
    */
   http?: HttpTransportOptions;
-
   /**
-   * Optional object with options specific to the Mqtt transport
+   * Optional object with options specific to the AMQP transport
    */
   amqp?: AmqpTransportOptions;
+
 }

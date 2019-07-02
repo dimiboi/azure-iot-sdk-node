@@ -9,7 +9,7 @@ import * as machina from 'machina';
 import { endpoint, results, errors, Message, AuthenticationProvider, AuthenticationType, TransportConfig } from 'azure-iot-common';
 import { MethodMessage, DeviceMethodResponse, DeviceTransport, DeviceClientOptions, TwinProperties, SharedAccessKeyAuthenticationProvider } from 'azure-iot-device';
 import { X509AuthenticationProvider, SharedAccessSignatureAuthenticationProvider } from 'azure-iot-device';
-import { getUserAgentString } from 'azure-iot-device';
+import { getCustomUserAgentString } from 'azure-iot-device';
 import { EventEmitter } from 'events';
 import * as util from 'util';
 import * as dbg from 'debug';
@@ -43,6 +43,7 @@ export class Mqtt extends EventEmitter implements DeviceTransport {
   private _fsm: machina.Fsm;
   private _topics: { [key: string]: TopicDescription };
   private _userAgentString: string;
+  private _productInfo: string;
 
   /**
    * @private
@@ -484,6 +485,10 @@ export class Mqtt extends EventEmitter implements DeviceTransport {
 
     /*Codes_SRS_NODE_DEVICE_MQTT_16_015: [The `setOptions` method shall throw an `ArgumentError` if the `cert` property is populated but the device uses symmetric key authentication.]*/
     if (this._authenticationProvider.type === AuthenticationType.Token && options.cert) throw new errors.ArgumentError('Cannot set x509 options on a device that uses token authentication.');
+
+    if (options.productInfo) {
+      this._productInfo = options.productInfo;
+    }
 
     this._mqtt.setOptions(options);
 
@@ -929,7 +934,11 @@ export class Mqtt extends EventEmitter implements DeviceTransport {
     if (this._userAgentString) {
       done();
     } else {
-      getUserAgentString((agent) => {
+      let customInfo = '';
+      if (this.hasOwnProperty('_productInfo')) {
+        customInfo = this._productInfo;  
+      }
+      getCustomUserAgentString(customInfo, (agent) => {
         this._userAgentString = agent;
         done();
       });

@@ -9,7 +9,7 @@ const debug = dbg('azure-iot-device-amqp:Amqp');
 import { EventEmitter } from 'events';
 
 import { DeviceTransport, MethodMessage, DeviceMethodResponse, TwinProperties, DeviceClientOptions, SharedAccessKeyAuthenticationProvider } from 'azure-iot-device';
-import { getUserAgentString } from 'azure-iot-device';
+import { getCustomUserAgentString } from 'azure-iot-device';
 import { Amqp as BaseAmqpClient, AmqpBaseTransportConfig, translateError, AmqpMessage, SenderLink, ReceiverLink } from 'azure-iot-amqp-base';
 import { endpoint, SharedAccessSignature, errors, results, Message, AuthenticationProvider, AuthenticationType, TransportConfig } from 'azure-iot-common';
 import { AmqpDeviceMethodClient } from './amqp_device_method_client';
@@ -278,8 +278,11 @@ export class Amqp extends EventEmitter implements DeviceTransport {
                   this._d2cEndpoint = endpoint.deviceEventPath(credentials.deviceId);
                   this._messageEventName = 'message';
                 }
-
-                getUserAgentString((userAgentString) => {
+                let customInfo = '';
+                if (this.hasOwnProperty('_options') && this._options.hasOwnProperty('productInfo')) {
+                  customInfo = this._options.productInfo;
+                }
+                getCustomUserAgentString(customInfo, (userAgentString) => {
                   const config: AmqpBaseTransportConfig = {
                     uri: this._getConnectionUri(credentials),
                     sslOptions: credentials.x509,
@@ -681,6 +684,7 @@ export class Amqp extends EventEmitter implements DeviceTransport {
         throw new errors.InvalidOperationError('cannot set X509 options when using token-based authentication');
       }
     }
+
 
     /*Codes_SRS_NODE_DEVICE_AMQP_13_001: [ The setOptions method shall save the options passed in. ]*/
     this._options = options;

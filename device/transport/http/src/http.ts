@@ -15,7 +15,7 @@ import { IncomingMessage } from 'http';
 import { DeviceTransport, MethodMessage, DeviceMethodResponse, TwinProperties, SharedAccessKeyAuthenticationProvider } from 'azure-iot-device';
 import { X509AuthenticationProvider, SharedAccessSignatureAuthenticationProvider } from 'azure-iot-device';
 import { DeviceClientOptions, HttpReceiverOptions } from 'azure-iot-device';
-import { getUserAgentString } from 'azure-iot-device';
+import { getCustomUserAgentString } from 'azure-iot-device';
 
 const MESSAGE_PROP_HEADER_PREFIX = 'iothub-app-';
 
@@ -72,6 +72,7 @@ export class Http extends EventEmitter implements DeviceTransport {
   private _timeoutObj: number;
   private _receiverStarted: boolean;
   private _userAgentString: string;
+  private _productInfo: string; // this is the custom user agent string
 
   /**
    * @private
@@ -323,6 +324,11 @@ export class Http extends EventEmitter implements DeviceTransport {
         key: options.key,
         passphrase: options.passphrase
       });
+    }
+
+    if (options.hasOwnProperty('productInfo')) {
+      // According to Custom User Agent Spec: "Store the entire string in the User-Agent HTTP header"
+      this._productInfo = options.productInfo;
     }
 
     /*Codes_SRS_NODE_DEVICE_HTTP_16_010: [`setOptions` should not throw if `done` has not been specified.]*/
@@ -786,10 +792,14 @@ export class Http extends EventEmitter implements DeviceTransport {
     if (this._userAgentString) {
       done();
     } else {
-      getUserAgentString((agent) => {
+      if (!this.hasOwnProperty('_productInfo')) {
+        this._productInfo = '';
+      } 
+      getCustomUserAgentString(this._productInfo, (agent) => {
         this._userAgentString = agent;
         done();
       });
     }
   }
 }
+

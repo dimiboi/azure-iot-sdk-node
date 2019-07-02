@@ -20,3 +20,21 @@ export function getUserAgentString(done?: NoErrorCallback<string>): Promise<stri
     });
   }, done);
 }
+
+export function getCustomUserAgentString(productInfo: string, done: NoErrorCallback<string>): void;
+export function getCustomUserAgentString(productInfo: string): Promise<string>;
+export function getCustomUserAgentString(productInfo: string, done?: NoErrorCallback<string>): Promise<string> | void {
+  let userAgentCustomInfo: string;
+  if (!productInfo) {
+    userAgentCustomInfo = '';
+  } else if (typeof(productInfo) === 'string'){
+    userAgentCustomInfo = productInfo;
+  } else {
+    throw new TypeError('Error: productInfo must be of type \'string\'');
+  }
+  return noErrorCallbackToPromise((_callback) => {
+    getAgentPlatformString((platformString) => {
+      _callback(packageJson.name + '/' + packageJson.version + ' (' + platformString + ')' + userAgentCustomInfo);
+    });
+  }, done);
+}

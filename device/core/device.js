@@ -57,6 +57,7 @@ module.exports = {
   Twin: require('./lib/twin').Twin,
   TwinProperties: require('./lib/twin').TwinProperties,
   getUserAgentString: require('./lib/utils').getUserAgentString,
+  getCustomUserAgentString: require('./lib/utils').getCustomUserAgentString,
   EdgedAuthConfig: require('./lib/iotedge_authentication_provider').EdgedAuthConfig,
   IotEdgeAuthenticationProvider: require('./lib/iotedge_authentication_provider').IotEdgeAuthenticationProvider
 };

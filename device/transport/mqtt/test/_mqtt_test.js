@@ -39,6 +39,7 @@ describe('Mqtt', function () {
     fakeMqttBase.subscribe = sinon.stub().callsArg(2);
     fakeMqttBase.unsubscribe = sinon.stub().callsArg(1);
     fakeMqttBase.updateSharedAccessSignature = sinon.stub().callsArg(1);
+    fakeMqttBase.setOptions = sinon.stub().callsArg(1);
   });
 
   afterEach(function () {
@@ -482,11 +483,13 @@ describe('Mqtt', function () {
 
   describe('#setOptions', function() {
     var fakeX509Options = { cert: 'cert', key: 'key'};
+    var fakeProductInfoOptions = {productInfo: 'fakeProductInfo'}
     var fakeConfig = {
       host: 'host',
       deviceId: 'deviceId',
       x509: fakeX509Options
     };
+
 
     var fakeX509AuthenticationProvider;
 
@@ -555,9 +558,21 @@ describe('Mqtt', function () {
         testCallback();
       });
     });
+
+    it('sets options for productInfo', function(testCallback) {
+      var mqtt = new Mqtt(fakeX509AuthenticationProvider);
+      mqtt.setOptions(fakeProductInfoOptions, function (err) {
+        assert.strictEqual(mqtt._productInfo, fakeProductInfoOptions.productInfo);
+        testCallback();
+      });
+    });
+
+
   });
 
   describe('#connect', function() {
+    var fakeProductInfoOptions = {productInfo: 'fakeProductInfo'}
+
     /* Tests_SRS_NODE_DEVICE_MQTT_12_004: [The connect method shall call the connect method on MqttBase */
     it ('calls connect on the transport', function(testCallback) {
       var mqtt = new Mqtt(fakeAuthenticationProvider, fakeMqttBase);

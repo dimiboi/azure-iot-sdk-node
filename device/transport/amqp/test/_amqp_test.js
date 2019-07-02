@@ -14,6 +14,8 @@ var Amqp = require('../lib/amqp.js').Amqp;
 var errors = require('azure-iot-common').errors;
 var results = require('azure-iot-common').results;
 var AuthenticationType = require('azure-iot-common').AuthenticationType;
+var getUserAgentString = require('azure-iot-device').getUserAgentString;
+
 
 describe('Amqp', function () {
   var transport = null;
@@ -396,6 +398,18 @@ describe('Amqp', function () {
           assert.isNotOk(err);
           assert(fakeBaseClient.connect.called);
           assert.strictEqual(fakeBaseClient.connect.firstCall.args[0].sslOptions.ca, 'ca cert');
+          testCallback();
+        });
+      });      
+      
+      // The connect method shall set the userAgentString, which should contain the productInfo.
+      it('sets productInfo if provided', function (testCallback) {
+        var options = { productInfo: 'test: THIS IS A TEST'};
+        transport.setOptions(options);
+        transport.connect(function (err) {
+          assert.isNotOk(err);
+          assert(fakeBaseClient.connect.called);
+          assert(fakeBaseClient.connect.firstCall.args[0].userAgentString.includes(options.productInfo));
           testCallback();
         });
       });
@@ -870,9 +884,14 @@ describe('Amqp', function () {
       });
 
       /*Tests_SRS_NODE_DEVICE_AMQP_13_001: [ The setOptions method shall save the options passed in. ]*/
-      it('saves options', function () {
+      it('saves CA options', function () {
         transport.setOptions({ ca: 'ca cert' });
         assert.strictEqual(transport._options.ca, 'ca cert');
+      });
+
+      it('saves productInfo options', function () {
+        transport.setOptions({ productInfo: 'customer user agent information' });
+        assert.strictEqual(transport._options.productInfo, 'customer user agent information');
       });
     });
 

@@ -14,4 +14,5 @@ export { EdgedAuthConfig, IotEdgeAuthenticationProvider } from './lib/iotedge_au
 export { Twin, TwinProperties } from './lib/twin';
 export { DeviceClientOptions, HttpReceiverOptions, AmqpTransportOptions, HttpTransportOptions, MqttTransportOptions } from './lib/interfaces';
 export { getUserAgentString } from './lib/utils';
+export { getCustomUserAgentString } from './lib/utils';
 export { MethodMessage, DeviceTransport } from './lib/internal_client'
