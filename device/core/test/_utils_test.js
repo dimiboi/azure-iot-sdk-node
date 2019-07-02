@@ -60,7 +60,7 @@ describe('getCustomUserAgentString', function() {
     });
   });
   
-  it.only('throws on wrong type for productInfo', function() {
+  it('throws on wrong type for productInfo', function() {
     // TODO: Implement this with a bunch of parameters.
     // Go through the code and look for []
     [41, [5, 1], {test: 'test'}].forEach(function (badValue) {
