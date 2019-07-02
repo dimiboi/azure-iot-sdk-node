@@ -936,7 +936,7 @@ export class Mqtt extends EventEmitter implements DeviceTransport {
     } else {
       let customInfo = '';
       if (this.hasOwnProperty('_productInfo')) {
-        customInfo = this._productInfo;  
+        customInfo = this._productInfo;
       }
       getCustomUserAgentString(customInfo, (agent) => {
         this._userAgentString = agent;
